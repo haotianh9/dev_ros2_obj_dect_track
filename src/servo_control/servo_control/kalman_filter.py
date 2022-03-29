@@ -3,7 +3,10 @@ from rclpy.node import Node # Handles the creation of node
 from geometry_msgs.msg import Point
 import numpy as np
 import time
+from gpiozero import Servo
 
+PIN_H=20
+PIN_W=21
 class KalmanFilter(Node):
 """
 Create an ImageObjectDetection class, which is a subclass of the Node class.
@@ -15,9 +18,12 @@ Create an ImageObjectDetection class, which is a subclass of the Node class.
         super().__init__('kalman_filter')
         self.subscription = self.create_subscription(Point,'center_pos', self.listener_callback, 10)
         self.subscription
+        self.dt=0.1
         self.rec_time=None
         self.est_pos=None
         self.est_vel=None
+        self.horizontal_servo=Servo(PIN_H)
+        self.vertical_servo=Servo(PIN_W)
     def listener_callback(self, data):
         """
         Callback function.
@@ -33,8 +39,11 @@ Create an ImageObjectDetection class, which is a subclass of the Node class.
             old_pos=self.est_pos
             self.est_pos=np.array([data.x,data.y])
             self.est_vel=(self.est_pos-old_pos)/(self.rec_time-t_1)
-
-
+            n_step=int(((self.rec_time-t_1)/self.dt)/2)
+            for i in range(n_step):
+                self.horizontal_servo.value=0.1*(self.est_pos[0]+i*self.dt*self.est_vel[0]-0.5)
+                self.vertical_servo.value=0.1*(self.est_pos[1]+i*self.dt*self.est_vel[1]-0.5)
+                time.sleep(self.dt)
 def main(args=None):
     
     # Initialize the rclpy library
