@@ -8,9 +8,9 @@ from gpiozero import Servo
 PIN_H=20
 PIN_W=21
 class KalmanFilter(Node):
-"""
-Create an ImageObjectDetection class, which is a subclass of the Node class.
-"""
+    """
+    Create an ImageObjectDetection class, which is a subclass of the Node class.
+    """
     def __init__(self):
         """
         Class constructor to set up the node
@@ -29,7 +29,8 @@ Create an ImageObjectDetection class, which is a subclass of the Node class.
         Callback function.
         """
         self.get_logger().info('Receiving position')
-        if self.rec_time=None:
+        
+        if self.rec_time == None:
             self.rec_time=time.time()
             self.est_pos=np.array([data.x,data.y])
             self.est_vel=np.array([0.0,0.0])

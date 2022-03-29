@@ -126,11 +126,12 @@ class ImageObjectDetection(Node):
       (H,W)=current_frame.shape[:2]
       t2=time.time()
       self.get_logger().info('object detection time: {}'.format(t2-t1))
-      pos=Point()
-      pos.x=(boxes[0][0]+boxes[0][2]/2.0)/W
-      pos.y=(boxes[0][1]+boxes[0][3]/2.0)/H
-      pos.z=0.0
-      self.publisher_.publish(pos)
+      if len(boxes) > 0:
+        pos=Point()
+        pos.x=(boxes[0][0]+boxes[0][2]/2.0)/W
+        pos.y=(boxes[0][1]+boxes[0][3]/2.0)/H
+        pos.z=0.0
+        self.publisher_.publish(pos)
       if self.display_image:
         # Display image
         if len(indexs) > 0:
@@ -144,7 +145,8 @@ class ImageObjectDetection(Node):
         cv2.imshow('object detection result',current_frame)
         
         cv2.waitKey(1)
-  
+      else:
+        self.get_logger().info('no object detected')
 def main(args=None):
     
     # Initialize the rclpy library

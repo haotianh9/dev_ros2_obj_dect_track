@@ -20,6 +20,7 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'servo_kal_con = servo_control.kalman_filter:main'
         ],
     },
 )
